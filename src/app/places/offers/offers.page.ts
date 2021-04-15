@@ -1,3 +1,5 @@
+import { PlacesService } from './../places.service';
+import { Place } from './../place.model';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./offers.page.scss'],
 })
 export class OffersPage implements OnInit {
+  loadedOffers: Place[];
 
-  constructor() { }
+  constructor(private placesService: PlacesService) { }
 
   ngOnInit() {
+    this.loadedOffers = this.placesService.places;
+  }
+
+  ionViewWillEnter(){
+    this.loadedOffers = this.placesService.places;
   }
 
 }
