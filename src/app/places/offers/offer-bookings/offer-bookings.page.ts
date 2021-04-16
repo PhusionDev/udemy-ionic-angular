@@ -12,7 +12,7 @@ import { NavController } from '@ionic/angular';
 export class OfferBookingsPage implements OnInit {
   place: Place;
 
-  constructor (
+  constructor(
     private route: ActivatedRoute,
     private navCtrl: NavController,
     private placesService: PlacesService) { }
