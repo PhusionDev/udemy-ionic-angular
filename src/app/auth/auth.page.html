@@ -61,7 +61,7 @@
             expand="block"
             (click)="onLogin()"
             [disabled]="!f.valid">
-            Login
+            {{ isLogin ? 'Login' : 'Register' }}
           </ion-button>
         </ion-col>
       </ion-row>
