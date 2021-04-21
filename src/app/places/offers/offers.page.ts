@@ -20,10 +20,6 @@ export class OffersPage implements OnInit {
     this.loadedOffers = this.placesService.places;
   }
 
-  ionViewWillEnter(){
-    this.loadedOffers = this.placesService.places;
-  }
-
   onEdit(offerId: string, slidingItem: IonItemSliding) {
     slidingItem.close();
     this.router.navigate(['/','places','tabs','offers','edit',offerId]);
