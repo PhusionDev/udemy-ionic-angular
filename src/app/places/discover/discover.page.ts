@@ -24,6 +24,7 @@ export class DiscoverPage implements OnInit {
 
   ionViewWillEnter(){
     this.loadedPlaces = this.placesService.places;
+    this.listedLoadedPlaces = this.loadedPlaces.slice(1);
   }
 
   onOpenMenu() {

@@ -1,3 +1,4 @@
+import { AuthService } from './../auth/auth.service';
 import { Place } from './place.model';
 import { Injectable } from '@angular/core';
 
@@ -13,7 +14,8 @@ export class PlacesService {
       'https://leadingestates.com/wp-content/uploads/2015/11/184-10-manhattan-01.jpg',
       149.99,
       new Date('2019-01-01'),
-      new Date('2019-12-31')
+      new Date('2019-12-31'),
+      'abc'
     ),
     new Place(
       'p2',
@@ -22,7 +24,8 @@ export class PlacesService {
       'https://www.iata.org/contentassets/4b8ec35d55dd4596a1ee21a75aaab835/paris-330x200.jpg?w=330&h=200&mode=crop&scale=both&v=20190829085556',
       189.99,
       new Date('2019-01-01'),
-      new Date('2019-12-31')
+      new Date('2019-12-31'),
+      'abc'
     ),
     new Place(
       'p3',
@@ -31,7 +34,8 @@ export class PlacesService {
       'https://images.fineartamerica.com/images-medium-large-5/foggy-palace-5-sfphotostore-.jpg',
       99.99,
       new Date('2019-01-01'),
-      new Date('2019-12-31')
+      new Date('2019-12-31'),
+      'abc'
     )
   ];
 
@@ -40,11 +44,31 @@ export class PlacesService {
     return [...this._places];
   }
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   getPlace(id: string) {
     // eslint-disable-next-line no-underscore-dangle
     return {...this._places.find(p => p.id === id)};
+  }
+
+  addPlace(
+    title: string,
+    description: string,
+    price: number,
+    dateFrom: Date,
+    dateTo: Date
+  ) {
+    const newPlace = new Place(
+      Math.random().toString(),
+      title,
+      description,
+      'https://images.fineartamerica.com/images-medium-large-5/foggy-palace-5-sfphotostore-.jpg',
+      price,
+      dateFrom,
+      dateTo,
+      this.authService.userId
+    );
+    this.places.push(newPlace);
   }
 
 }
