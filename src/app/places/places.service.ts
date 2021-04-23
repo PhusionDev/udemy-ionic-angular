@@ -52,7 +52,7 @@ export class PlacesService {
               );
             }
           }
-          console.log(places);
+          // return [];
           return places;
         }),
         tap((places) => {
