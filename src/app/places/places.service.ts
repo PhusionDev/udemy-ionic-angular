@@ -5,42 +5,21 @@ import { BehaviorSubject } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
+interface PlaceData {
+  availableFrom: string;
+  availableTo: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  title: string;
+  userId: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class PlacesService {
-  private _places = new BehaviorSubject<Place[]>([
-    new Place(
-      'p1',
-      'Manhattan Mansion',
-      'In the heart of New York City',
-      'https://leadingestates.com/wp-content/uploads/2015/11/184-10-manhattan-01.jpg',
-      149.99,
-      new Date('2019-01-01'),
-      new Date('2019-12-31'),
-      'bronk'
-    ),
-    new Place(
-      'p2',
-      "L'Amour Toujours",
-      'A romantic place in Paris',
-      'https://www.iata.org/contentassets/4b8ec35d55dd4596a1ee21a75aaab835/paris-330x200.jpg?w=330&h=200&mode=crop&scale=both&v=20190829085556',
-      189.99,
-      new Date('2019-01-01'),
-      new Date('2019-12-31'),
-      'abc'
-    ),
-    new Place(
-      'p3',
-      'The Foggy Palace',
-      'Not your average city trip!',
-      'https://images.fineartamerica.com/images-medium-large-5/foggy-palace-5-sfphotostore-.jpg',
-      99.99,
-      new Date('2019-01-01'),
-      new Date('2019-12-31'),
-      'abc'
-    ),
-  ]);
+  private _places = new BehaviorSubject<Place[]>([]);
 
   get places() {
     // eslint-disable-next-line no-underscore-dangle
@@ -48,6 +27,40 @@ export class PlacesService {
   }
 
   constructor(private authService: AuthService, private http: HttpClient) {}
+
+  fetchPlaces() {
+    return this.http
+      .get<{ [key: string]: PlaceData }>(
+        'https://ionic-angular-course-689b6-default-rtdb.firebaseio.com/offered-places.json'
+      )
+      .pipe(
+        map((resData) => {
+          const places = [];
+          for (const key in resData) {
+            if (resData.hasOwnProperty(key)) {
+              places.push(
+                new Place(
+                  key,
+                  resData[key].title,
+                  resData[key].description,
+                  resData[key].imageUrl,
+                  resData[key].price,
+                  new Date(resData[key].availableFrom),
+                  new Date(resData[key].availableTo),
+                  resData[key].userId
+                )
+              );
+            }
+          }
+          console.log(places);
+          return places;
+        }),
+        tap((places) => {
+          // eslint-disable-next-line no-underscore-dangle
+          this._places.next(places);
+        })
+      );
+  }
 
   getPlace(id: string) {
     return this.places.pipe(
