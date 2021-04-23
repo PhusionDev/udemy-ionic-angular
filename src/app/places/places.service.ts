@@ -2,7 +2,7 @@ import { AuthService } from './../auth/auth.service';
 import { Place } from './place.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { take, map, tap, delay } from 'rxjs/operators';
+import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 interface PlaceData {
@@ -107,12 +107,12 @@ export class PlacesService {
   }
 
   updatePlace(placeId: string, title: string, description: string) {
+    let updatedPlaces: Place[];
     return this.places.pipe(
       take(1),
-      delay(1000),
-      tap((places) => {
+      switchMap((places) => {
         const updatedPlaceIndex = places.findIndex((pl) => pl.id === placeId);
-        const updatedPlaces = [...places];
+        updatedPlaces = [...places];
         const oldPlace = updatedPlaces[updatedPlaceIndex];
         updatedPlaces[updatedPlaceIndex] = new Place(
           oldPlace.id,
@@ -124,6 +124,12 @@ export class PlacesService {
           oldPlace.availableTo,
           oldPlace.userId
         );
+        return this.http.put(
+          `https://ionic-angular-course-689b6-default-rtdb.firebaseio.com/offered-places/${placeId}.json`,
+          { ...updatedPlaces[updatedPlaceIndex], id: null }
+        );
+      }),
+      tap((resData) => {
         // eslint-disable-next-line no-underscore-dangle
         this._places.next(updatedPlaces);
       })
