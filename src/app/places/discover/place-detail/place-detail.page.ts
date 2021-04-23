@@ -1,3 +1,4 @@
+import { AuthService } from './../../../auth/auth.service';
 import { BookingService } from './../../../bookings/booking.service';
 import { Place } from './../../place.model';
 import { PlacesService } from './../../places.service';
@@ -19,6 +20,7 @@ import { Subscription } from 'rxjs';
 })
 export class PlaceDetailPage implements OnInit, OnDestroy {
   place: Place;
+  isBookable = false;
   placeSub: Subscription;
 
   constructor(
@@ -29,7 +31,8 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
     private actionSheetCtrl: ActionSheetController,
     private bookingService: BookingService,
     private loadingCtrl: LoadingController,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -42,6 +45,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         .getPlace(paramMap.get('placeId'))
         .subscribe((place) => {
           this.place = place;
+          this.isBookable = place.userId !== this.authService.userId;
         });
     });
   }
