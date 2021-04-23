@@ -63,10 +63,25 @@ export class PlacesService {
   }
 
   getPlace(id: string) {
-    return this.places.pipe(
-      take(1),
-      map((places) => ({ ...places.find((p) => p.id === id) }))
-    );
+    return this.http
+      .get<PlaceData>(
+        `https://ionic-angular-course-689b6-default-rtdb.firebaseio.com/offered-places/${id}.json`
+      )
+      .pipe(
+        map(
+          (resData) =>
+            new Place(
+              id,
+              resData.title,
+              resData.description,
+              resData.imageUrl,
+              resData.price,
+              new Date(resData.availableFrom),
+              new Date(resData.availableTo),
+              resData.userId
+            )
+        )
+      );
   }
 
   addPlace(
